@@ -1,20 +1,10 @@
-import { useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useTodos } from "../providers/TodoProvider";
-import { TodoItem } from "../components/TodoItem";
-import { AddTodoModal } from "../components/AddTodoModal";
+import { useTodos } from "../../providers/TodoProvider";
+import { TodoItem } from "../../components/TodoItem";
+import { router } from 'expo-router';
 
 export default function Index() {
-  const { todos, loading } = useTodos();
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-
-  const handleAddTodo = () => {
-    setIsAddModalVisible(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsAddModalVisible(false);
-  };
+  const { todos } = useTodos();
 
   const todayTodos = todos.filter(todo => {
     const todoDate = new Date(todo.inserted_at);
@@ -32,7 +22,7 @@ export default function Index() {
         <Text style={styles.title}>Today's Tasks</Text>
         <TouchableOpacity 
           style={styles.addButton}
-          onPress={handleAddTodo}
+          onPress={() => router.push('/todo/add')}
         >
           <Text style={styles.addButtonText}>+ Add Task</Text>
         </TouchableOpacity>
@@ -44,10 +34,7 @@ export default function Index() {
         renderItem={({ item }) => (
           <TodoItem
             todo={item}
-            onEdit={() => {
-              // Handle edit - we'll implement this later
-              console.log('Edit todo:', item.id);
-            }}
+            onEdit={() => router.push(`/todo/${item.id}`)}
           />
         )}
         contentContainerStyle={styles.listContent}
@@ -58,11 +45,6 @@ export default function Index() {
             </Text>
           </View>
         }
-      />
-
-      <AddTodoModal
-        visible={isAddModalVisible}
-        onClose={handleCloseModal}
       />
     </View>
   );
