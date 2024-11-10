@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Todo, Group, TodoWithGroup } from '../types/database';
+import { Todo, Group, TodoWithGroup, NotificationSchedule } from '../types/database';
 
 export async function fetchTodos(userId: string): Promise<TodoWithGroup[]> {
   const { data, error } = await supabase
@@ -22,8 +22,10 @@ export async function fetchTodos(userId: string): Promise<TodoWithGroup[]> {
 export async function createTodo(
   userId: string,
   task: string,
+  finish_by: string | null = null,
   groupId?: number,
-  priorityLevel: number = 1
+  priorityLevel: number = 1,
+  notifications: NotificationSchedule | null = null
 ): Promise<Todo> {
   const { data, error } = await supabase
     .from('todos')
@@ -34,6 +36,8 @@ export async function createTodo(
         group_id: groupId,
         priority_level: priorityLevel,
         is_complete: false,
+        finish_by,
+        notifications,
       },
     ])
     .select()

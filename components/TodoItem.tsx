@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Animated,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -63,10 +62,7 @@ export function TodoItem({ todo, onEdit }: TodoItemProps) {
   };
 
   return (
-    <TouchableOpacity
-      style={[styles.container, todo.is_complete && styles.completedContainer]}
-      onPress={onEdit}
-    >
+    <View style={[styles.container, todo.is_complete && styles.completedContainer]}>
       <TouchableOpacity
         style={styles.checkbox}
         onPress={handleToggleComplete}
@@ -115,14 +111,23 @@ export function TodoItem({ todo, onEdit }: TodoItemProps) {
           </Text>
         )}
 
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={handleDelete}
-        >
-          <Ionicons name="trash-outline" size={20} color="#FF3B30" />
-        </TouchableOpacity>
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={onEdit}
+          >
+            <Ionicons name="pencil-outline" size={20} color="#007AFF" />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={handleDelete}
+          >
+            <Ionicons name="trash-outline" size={20} color="#FF3B30" />
+          </TouchableOpacity>
+        </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -193,10 +198,13 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
-  deleteButton: {
-    position: 'absolute',
-    right: 0,
-    bottom: 0,
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 8,
+    gap: 12,
+  },
+  actionButton: {
     padding: 4,
   },
 }); 

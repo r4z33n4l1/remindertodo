@@ -24,11 +24,7 @@ export const useAuth = () => {
   return context;
 };
 
-interface Props {
-  children: React.ReactNode;
-}
-
-export function AuthProvider({ children }: Props) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -50,7 +46,6 @@ export function AuthProvider({ children }: Props) {
     };
   }, []);
 
-  // Sign in function
   const signIn = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -63,7 +58,6 @@ export function AuthProvider({ children }: Props) {
     }
   };
 
-  // Sign out function
   const signOut = async () => {
     try {
       await supabase.auth.signOut();

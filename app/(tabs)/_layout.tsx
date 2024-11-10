@@ -1,24 +1,33 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { Colors } from '@/constants/Colors';
 
-export default function TabsLayout() {
+export default function TabLayout() {
+  const colorScheme = useColorScheme();
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerShown: true,
+        tabBarStyle: {
+          backgroundColor: colorScheme === 'dark' ? '#000' : '#fff',
+          borderTopColor: colorScheme === 'dark' ? '#333' : '#eee',
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="todo"
         options={{
-          title: "Today",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="today" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="all"
-        options={{
-          title: "All Tasks",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" size={size} color={color} />
+          title: "Tasks",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "list" : "list-outline"} 
+              size={24} 
+              color={color} 
+            />
           ),
         }}
       />
@@ -26,8 +35,25 @@ export default function TabsLayout() {
         name="calendar"
         options={{
           title: "Calendar",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "calendar" : "calendar-outline"} 
+              size={24} 
+              color={color} 
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "notifications" : "notifications-outline"} 
+              size={24} 
+              color={color} 
+            />
           ),
         }}
       />
@@ -35,8 +61,12 @@ export default function TabsLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons 
+              name={focused ? "settings" : "settings-outline"} 
+              size={24} 
+              color={color} 
+            />
           ),
         }}
       />

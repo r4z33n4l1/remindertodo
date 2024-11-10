@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -8,13 +9,22 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { useTodos } from '../../providers/TodoProvider';
+import { useTodos } from '../../../providers/TodoProvider';
 import { router } from 'expo-router';
 
-export default function AddTodo() {
+export default function EditTodo() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { todos, updateTodo } = useTodos();
   const [task, setTask] = useState('');
   const [priority, setPriority] = useState(1);
-  const { createTodo } = useTodos();
+
+  useEffect(() => {
+    const todo = todos.find(t => t.id === Number(id));
+    if (todo) {
+      setTask(todo.task);
+      setPriority(todo.priority_level);
+    }
+  }, [id, todos]);
 
   const handleSubmit = async () => {
     if (!task.trim()) {
@@ -23,10 +33,13 @@ export default function AddTodo() {
     }
 
     try {
-      await createTodo(task, undefined, priority);
+      await updateTodo(Number(id), {
+        task,
+        priority_level: priority,
+      });
       router.back();
     } catch (error) {
-      Alert.alert('Error', 'Failed to create task');
+      Alert.alert('Error', 'Failed to update task');
       console.error(error);
     }
   };
@@ -69,7 +82,7 @@ export default function AddTodo() {
         style={styles.submitButton}
         onPress={handleSubmit}
       >
-        <Text style={styles.submitButtonText}>Create Task</Text>
+        <Text style={styles.submitButtonText}>Update Task</Text>
       </TouchableOpacity>
     </ScrollView>
   );

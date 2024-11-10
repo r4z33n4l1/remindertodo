@@ -1,13 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
-import { TodoWithGroup, Group } from '../types/database';
+import { TodoWithGroup, Group, NotificationSchedule } from '../types/database';
 import * as todoUtils from '../utils/todoUtils';
 
 type TodoContextType = {
   todos: TodoWithGroup[];
   groups: Group[];
   loading: boolean;
-  createTodo: (task: string, groupId?: number, priorityLevel?: number) => Promise<void>;
+  createTodo: (
+    task: string,
+    finish_by: string | null,
+    groupId?: number,
+    priorityLevel?: number,
+    notifications?: NotificationSchedule | null
+  ) => Promise<void>;
   updateTodo: (todoId: number, updates: any) => Promise<void>;
   deleteTodo: (todoId: number) => Promise<void>;
   createGroup: (name: string, deadline?: string) => Promise<void>;
@@ -44,9 +50,22 @@ export function TodoProvider({ children }: { children: React.ReactNode }) {
     }
   }, [session]);
 
-  const createTodo = async (task: string, groupId?: number, priorityLevel: number = 1) => {
+  const createTodo = async (
+    task: string,
+    finish_by: string | null = null,
+    groupId?: number,
+    priorityLevel: number = 1,
+    notifications: NotificationSchedule | null = null
+  ) => {
     if (!session?.user) return;
-    await todoUtils.createTodo(session.user.id, task, groupId, priorityLevel);
+    await todoUtils.createTodo(
+      session.user.id,
+      task,
+      finish_by,
+      groupId,
+      priorityLevel,
+      notifications
+    );
     refreshTodos();
   };
 
